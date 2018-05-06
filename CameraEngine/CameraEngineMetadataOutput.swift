@@ -9,8 +9,8 @@
 import UIKit
 import AVFoundation
 
-public typealias blockCompletionDetectionFace = (faceObject: AVMetadataFaceObject) -> (Void)
-public typealias blockCompletionDetectionCode = (codeObject: AVMetadataMachineReadableCodeObject) -> (Void)
+public typealias blockCompletionDetectionFace = (_ faceObject: AVMetadataFaceObject) -> (Void)
+public typealias blockCompletionDetectionCode = (_ codeObject: AVMetadataMachineReadableCodeObject) -> (Void)
 
 public enum CameraEngineCaptureOutputDetection {
     case face
@@ -20,19 +20,19 @@ public enum CameraEngineCaptureOutputDetection {
     
     func foundationCaptureOutputDetection() -> [AnyObject] {
         switch self {
-        case .face: return [AVMetadataObjectTypeFace]
-        case .qrCode: return [AVMetadataObjectTypeQRCode]
+        case .face: return [AVMetadataObjectTypeFace as AnyObject]
+        case .qrCode: return [AVMetadataObjectTypeQRCode as AnyObject]
         case .bareCode: return [
-            AVMetadataObjectTypeUPCECode,
-            AVMetadataObjectTypeCode39Code,
-            AVMetadataObjectTypeCode39Mod43Code,
-            AVMetadataObjectTypeEAN13Code,
-            AVMetadataObjectTypeEAN8Code,
-            AVMetadataObjectTypeCode93Code,
-            AVMetadataObjectTypeCode128Code,
-            AVMetadataObjectTypePDF417Code,
-            AVMetadataObjectTypeQRCode,
-            AVMetadataObjectTypeAztecCode
+            AVMetadataObjectTypeUPCECode as AnyObject,
+            AVMetadataObjectTypeCode39Code as AnyObject,
+            AVMetadataObjectTypeCode39Mod43Code as AnyObject,
+            AVMetadataObjectTypeEAN13Code as AnyObject,
+            AVMetadataObjectTypeEAN8Code as AnyObject,
+            AVMetadataObjectTypeCode93Code as AnyObject,
+            AVMetadataObjectTypeCode128Code as AnyObject,
+            AVMetadataObjectTypePDF417Code as AnyObject,
+            AVMetadataObjectTypeQRCode as AnyObject,
+            AVMetadataObjectTypeAztecCode as AnyObject
             ]
         case .none: return []
         }
@@ -91,17 +91,17 @@ class CameraEngineMetadataOutput: NSObject, AVCaptureMetadataOutputObjectsDelega
             case AVMetadataObjectTypeFace:
                 if let block = self.blockCompletionFaceDetection, self.currentMetadataOutput == .face {
                     let transformedMetadataObject = previewLayer.transformedMetadataObject(for: metadataObject)
-                    block(faceObject: transformedMetadataObject as! AVMetadataFaceObject)
+                    block(transformedMetadataObject as! AVMetadataFaceObject)
                 }
             case AVMetadataObjectTypeQRCode:
                 if let block = self.blockCompletionCodeDetection, self.currentMetadataOutput == .qrCode {
                     let transformedMetadataObject = previewLayer.transformedMetadataObject(for: metadataObject)
-                    block(codeObject: transformedMetadataObject as! AVMetadataMachineReadableCodeObject)
+                    block(transformedMetadataObject as! AVMetadataMachineReadableCodeObject)
                 }
             case AVMetadataObjectTypeUPCECode, AVMetadataObjectTypeCode39Code, AVMetadataObjectTypeCode39Mod43Code, AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode93Code, AVMetadataObjectTypeCode128Code, AVMetadataObjectTypePDF417Code,AVMetadataObjectTypeQRCode, AVMetadataObjectTypeAztecCode:
                 if let block = self.blockCompletionCodeDetection, self.currentMetadataOutput == .bareCode {
                     let transformedMetadataObject = previewLayer.transformedMetadataObject(for: metadataObject)
-                    block(codeObject: transformedMetadataObject as! AVMetadataMachineReadableCodeObject)
+                    block(transformedMetadataObject as! AVMetadataMachineReadableCodeObject)
                 }
             default:break
             }
