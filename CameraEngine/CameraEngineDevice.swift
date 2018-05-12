@@ -14,11 +14,11 @@ public enum CameraEngineCameraFocus {
     case autoFocus
     case continuousAutoFocus
     
-    func foundationFocus() -> AVCaptureFocusMode {
+    func foundationFocus() -> AVCaptureDevice.FocusMode {
         switch self {
-        case .locked: return AVCaptureFocusMode.locked
-        case .autoFocus: return AVCaptureFocusMode.autoFocus
-        case .continuousAutoFocus: return AVCaptureFocusMode.continuousAutoFocus
+        case .locked: return AVCaptureDevice.FocusMode.locked
+        case .autoFocus: return AVCaptureDevice.FocusMode.autoFocus
+        case .continuousAutoFocus: return AVCaptureDevice.FocusMode.continuousAutoFocus
         }
     }
     
@@ -45,7 +45,7 @@ class CameraEngineDevice {
     private var frontCameraDevice: AVCaptureDevice!
     var micCameraDevice: AVCaptureDevice!
     var currentDevice: AVCaptureDevice?
-    var currentPosition: AVCaptureDevicePosition = .unspecified
+    var currentPosition: AVCaptureDevice.Position = .unspecified
     
     func changeCameraFocusMode(_ focusMode: CameraEngineCameraFocus) {
         if let currentDevice = self.currentDevice {
@@ -80,7 +80,7 @@ class CameraEngineDevice {
         return zoom
     }
     
-    func changeCurrentDevice(_ position: AVCaptureDevicePosition) {
+    func changeCurrentDevice(_ position: AVCaptureDevice.Position) {
         self.currentPosition = position
         switch position {
         case .back: self.currentDevice = self.backCameraDevice
@@ -90,8 +90,8 @@ class CameraEngineDevice {
     }
     
     private func configureDeviceCamera() {
-        let availableCameraDevices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo)
-        for device in availableCameraDevices as! [AVCaptureDevice] {
+        let availableCameraDevices = AVCaptureDevice.devices(for: AVMediaType.video)
+        for device in availableCameraDevices {
             if device.position == .back {
                 self.backCameraDevice = device
             }
@@ -102,7 +102,7 @@ class CameraEngineDevice {
     }
     
     private func configureDeviceMic() {
-        self.micCameraDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)
+        self.micCameraDevice = AVCaptureDevice.default(for: AVMediaType.audio)
     }
     
     init() {

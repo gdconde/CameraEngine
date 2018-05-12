@@ -42,7 +42,7 @@ class CameraEngineCaptureOutput: NSObject {
     var blockCompletionProgress: blockCompletionProgressRecording?
 	
     func capturePhotoBuffer(_ blockCompletion: @escaping blockCompletionCapturePhotoBuffer) {
-		guard let connectionVideo  = self.stillCameraOutput.connection(withMediaType: AVMediaTypeVideo) else {
+		guard let connectionVideo  = self.stillCameraOutput.connection(with: AVMediaType.video) else {
             blockCompletion(nil, nil)
 			return
 		}
@@ -51,7 +51,7 @@ class CameraEngineCaptureOutput: NSObject {
 	}
 	
     func capturePhoto(_ blockCompletion: @escaping blockCompletionCapturePhoto) {
-        guard let connectionVideo  = self.stillCameraOutput.connection(withMediaType: AVMediaTypeVideo) else {
+        guard let connectionVideo  = self.stillCameraOutput.connection(with: AVMediaType.video) else {
             blockCompletion(nil, nil)
             return
         }
@@ -118,7 +118,7 @@ extension CameraEngineCaptureOutput: AVCaptureVideoDataOutputSampleBufferDelegat
         }
     }
     
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+    func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         self.progressCurrentBuffer(sampleBuffer)
         if let block = self.blockCompletionBuffer {
             block(sampleBuffer)
@@ -137,9 +137,9 @@ extension CameraEngineCaptureOutput: AVCaptureVideoDataOutputSampleBufferDelegat
 
 extension CameraEngineCaptureOutput: AVCaptureFileOutputRecordingDelegate {
     
-    func capture(_ output: AVCaptureFileOutput!, didFinishRecordingToOutputFileAt outputFileURL: URL!, fromConnections connections: [Any]!, error: Error!) {
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         print("end recording video ... \(outputFileURL)")
-        print("error : \(error)")
+        print("error : \(error!)")
         if let blockCompletionVideo = self.blockCompletionVideo {
             blockCompletionVideo(outputFileURL, error as NSError?)
         }
